@@ -1,12 +1,13 @@
 # temp-monitor
 A temperature monitoring programm for Linux written in bash
+
 # dependencies
--
+```shell
 bash
--
+```
+
 
 # installation & usage
-
 ```shell
 git clone https://github.com/Justus0405/temp-monitor.git
 cd temp-monitor
