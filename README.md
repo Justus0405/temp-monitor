@@ -1,5 +1,5 @@
 # temp-monitor
-A temperature monitoring script for Linux written in bash
+A CPU temperature monitoring script for Linux written in bash
 
 # dependencies
 ```shell
