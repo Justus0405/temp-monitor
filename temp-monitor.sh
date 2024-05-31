@@ -20,7 +20,7 @@ do
 	echo -e "Last checked :" `date`
 	echo -e ""
 
-	if [ $TEMP -ge 50 ];
+	if [ $TEMP -ge 60 ];
 	then
 		echo -e "["`date`"]:" "\e[1:31mWARNING! CPU IS" $TEMP"°C\e[0m" >> ~/.config/temp-monitor/TEMP_WARNING.txt
 	fi
