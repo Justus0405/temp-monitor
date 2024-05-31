@@ -6,7 +6,6 @@ A temperature monitoring programm for Linux written in bash
 bash
 ```
 
-
 # installation & usage
 ```shell
 git clone https://github.com/Justus0405/temp-monitor.git
