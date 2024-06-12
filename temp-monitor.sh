@@ -15,7 +15,7 @@ do
 	TEMP_MILLI=$(cat /sys/class/thermal/thermal_zone1/temp)
 	TEMP=$(($TEMP_MILLI/1000))
 	echo "["`date`"]:" $TEMP"°C" >> ~/.config/temp-monitor/TEMP_LOG.txt
- 
+
 	echo -e "Temperature  :\e[1:36m" $TEMP"°C\e[0m"
 	echo -e "Last checked :" `date`
 	echo -e ""
