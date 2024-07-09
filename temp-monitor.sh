@@ -16,13 +16,13 @@ do
 	TEMP=$(($TEMP_MILLI/1000))
 	echo "["`date`"]:" $TEMP"°C" >> ~/.config/temp-monitor/TEMP_LOG.txt
 
-	echo -e "Temperature  :\e[1:36m" $TEMP"°C\e[0m"
+	echo -e "Temperature  :\e[1;36m" $TEMP"°C\e[0m"
 	echo -e "Last checked :" `date`
 	echo -e ""
 
 	if [ $TEMP -ge 60 ];
 	then
-		echo -e "["`date`"]:" "\e[1:31mWARNING! CPU IS" $TEMP"°C\e[0m" >> ~/.config/temp-monitor/TEMP_WARNING.txt
+		echo -e "["`date`"]:" "\e[1;31mWARNING! CPU IS" $TEMP"°C\e[0m" >> ~/.config/temp-monitor/TEMP_WARNING.txt
 	fi
 
 	echo -e "Warnings:"
