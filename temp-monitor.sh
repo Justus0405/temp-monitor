@@ -1,13 +1,39 @@
 #!/bin/bash
 
-VERSION=1.1
+# Variables
+VERSION=1.2
+WARNING_THRESHOLD=80
+CONFIG_DIR="$HOME/.config/temp-monitor"
+LOG_FILE="$CONFIG_DIR/TEMP_LOG.txt"
+WARNING_FILE="$CONFIG_DIR/TEMP_WARNING.txt"
 
-# Make config and log files
-mkdir -p ~/.config/temp-monitor
-touch ~/.config/temp-monitor/TEMP_LOG.txt
-touch ~/.config/temp-monitor/TEMP_WARNING.txt
+# Create config directory and files
+mkdir -p "$CONFIG_DIR"
+touch "$LOG_FILE" "$WARNING_FILE"
 
 ## General functions
+
+# Function to find the temperature file path
+FIND_TEMP_PATH() {
+	local potential_paths=(
+		"/sys/class/thermal/thermal_zone1/temp"
+		"/sys/class/thermal/thermal_zone0/temp"
+		"/sys/class/hwmon/hwmon1/temp1_input"
+		"/sys/class/hwmon/hwmon0/temp1_input"
+	)
+	for path in "${potential_paths[@]}"; do
+		if [ -f "$path" ]; then
+			# Check if the sensor returns a valid value
+			local temp_value=$(cat "$path")
+			if [[ $temp_value =~ ^[0-9]+$ ]]; then
+				TEMP_PATH="$path"
+				return 0
+			fi
+		fi
+	done
+	echo "Error: No valid temperature sensor found"
+	exit
+}
 
 TOP_BAR() {
 
@@ -18,11 +44,13 @@ TOP_BAR() {
 
 MAIN() {
 
-	# Get the current CPU temperature (usually thermal_zone1) and divide it by 1000 because it is given back as millicelsius
-	CPU_TEMP=$(( $(cat /sys/class/thermal/thermal_zone1/temp) / 1000 ))
+	# Get the current CPU temperature and divide it by 1000 because it is given back as millicelsius
+	CPU_TEMP=$(( $(cat "$TEMP_PATH") / 1000 ))
+	# Get the curremt time in a specific format
+	CURRENT_TIME=$(date +"%a %d.%m.%Y %H:%M:%S")
 
 	# Write the current date and time along with the CPU temperature to the log file
-	echo "["`date +"%a %d.%m.%Y %H:%M:%S"`"]:" $CPU_TEMP"°C" >> ~/.config/temp-monitor/TEMP_LOG.txt
+	echo "[$CURRENT_TIME]:" $CPU_TEMP"°C" >> "$LOG_FILE"
 
 	# Asign the display temperature a color based on the temperature
 	if (( CPU_TEMP <= 39 )); then
@@ -39,9 +67,8 @@ MAIN() {
 	echo -e "│                                                │"
 
 	# Check if the current temperature is above the warning threshold
-	if [ $CPU_TEMP -ge 80 ];
-	then
-		echo -e "│ ["`date +"%a %d.%m.%Y %H:%M:%S"`"]:" "\e[1;31mWARNING! CPU IS" $CPU_TEMP"°C\e[0m │" >> ~/.config/temp-monitor/TEMP_WARNING.txt
+	if (( CPU_TEMP >= WARNING_THRESHOLD )); then
+		echo -e "│ [$CURRENT_TIME]:" "\e[1;31mWARNING! CPU IS" $CPU_TEMP"°C\e[0m │" >> "$WARNING_FILE"
 	fi
 }
 
@@ -61,11 +88,12 @@ BOTTOM_BAR() {
 
 ## Main part
 
+FIND_TEMP_PATH
+
 while :
 do
 	TOP_BAR
 	MAIN
-	# Just comment the parts out which you dont want, for example: #WARNINGS
 	WARNINGS
 	BOTTOM_BAR
 
