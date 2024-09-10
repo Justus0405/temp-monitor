@@ -20,6 +20,8 @@ FIND_TEMP_PATH() {
 		"/sys/class/thermal/thermal_zone0/temp"
 		"/sys/class/hwmon/hwmon1/temp1_input"
 		"/sys/class/hwmon/hwmon0/temp1_input"
+  		"/sys/class/hwmon/hwmon0/temp2_input"
+		"/sys/class/hwmon/hwmon1/temp2_input"
 	)
 	for path in "${potential_paths[@]}"; do
 		if [ -f "$path" ]; then
