@@ -73,12 +73,17 @@ MAIN() {
 }
 
 WARNINGS() {
-
 	echo -e "├────────────────────────────────────────────────┤"
 	echo -e "│                                                │"
 	echo -e "│ \e[1;34mWarnings\e[0m:                                      │"
 	echo -e "│                                                │"
-	cat ~/.config/temp-monitor/TEMP_WARNING.txt
+
+	if [ -s "$WARNING_FILE" ]; then
+		cat "$WARNING_FILE"
+	else
+		echo -e "│ \e[1;32mNo warnings recorded\e[0m                           │"
+	fi
+
 	echo -e "│                                                │"
 }
 
