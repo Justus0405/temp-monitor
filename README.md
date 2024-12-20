@@ -1,12 +1,12 @@
-# temp-monitor
+# Temp-monitor
 A CPU temperature monitoring script for Linux written in bash
 
-# dependencies
-```shell
+# Dependencies
+```plaintext
 bash
 ```
 
-# installation & usage
+# Installation & Usage
 ```shell
 git clone https://github.com/Justus0405/temp-monitor.git
 cd temp-monitor
