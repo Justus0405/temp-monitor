@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Variables
-VERSION=1.2
-INTERVAL=1m
-WARNING_THRESHOLD=80
+VERSION="1.2"
+INTERVAL="1m"
+WARNING_THRESHOLD="80"
 CONFIG_DIR="$HOME/.config/temp-monitor"
 LOG_FILE="$CONFIG_DIR/TEMP_LOG.txt"
 WARNING_FILE="$CONFIG_DIR/TEMP_WARNING.txt"
@@ -25,7 +25,7 @@ FIND_TEMP_PATH() {
 		"/sys/class/hwmon/hwmon0/temp2_input"
 	)
 	for path in "${potential_paths[@]}"; do
-		if [ -f "$path" ]; then
+		if [[ -f "$path" ]]; then
 			# Check if the sensor returns a valid value
 			temp_value=$(cat "$path")
 			if [[ $temp_value =~ ^[0-9]+$ ]]; then
@@ -53,7 +53,7 @@ MAIN() {
 	CURRENT_TIME=$(date +"%a %d.%m.%Y %H:%M:%S")
 
 	# Write the current date and time along with the CPU temperature to the log file
-	echo "[$CURRENT_TIME]:" $CPU_TEMP"°C" >>"$LOG_FILE"
+	echo "[$CURRENT_TIME]: $CPU_TEMP°C" >>"$LOG_FILE"
 
 	# Asign the display temperature a color based on the temperature
 	if ((CPU_TEMP <= 39)); then
@@ -71,7 +71,7 @@ MAIN() {
 
 	# Check if the current temperature is above the warning threshold
 	if ((CPU_TEMP >= WARNING_THRESHOLD)); then
-		echo -e "│ [$CURRENT_TIME]:" "\e[1;31mWARNING! CPU IS" $CPU_TEMP"°C\e[0m │" >>"$WARNING_FILE"
+		echo -e "│[$CURRENT_TIME]: \e[1;31mWARNING! CPU IS $CPU_TEMP°C\e[0m │" >>"$WARNING_FILE"
 	fi
 }
 
@@ -81,7 +81,7 @@ WARNINGS() {
 	echo -e "│ \e[1;34mWarnings\e[0m:                                      │"
 	echo -e "│                                                │"
 
-	if [ -s "$WARNING_FILE" ]; then
+	if [[ -s "$WARNING_FILE" ]]; then
 		cat "$WARNING_FILE"
 	else
 		echo -e "│ \e[1;32mNo warnings recorded\e[0m                           │"
