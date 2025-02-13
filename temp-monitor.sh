@@ -15,7 +15,7 @@ touch "$LOG_FILE" "$WARNING_FILE"
 ## General functions
 
 # Function to find the temperature file path
-FIND_TEMP_PATH() {
+find_temp_path() {
 	local potential_paths=(
 		"/sys/class/thermal/thermal_zone0/temp"
 		"/sys/class/thermal/thermal_zone1/temp"
@@ -38,14 +38,14 @@ FIND_TEMP_PATH() {
 	exit 1
 }
 
-TOP_BAR() {
+top_bar() {
 
 	clear
 	echo -e "╭───┤ \e[1;32mTemp Monitor\e[0m ├───┤ \e[1;33mVersion $VERSION\e[0m ├───────────╮"
 	echo -e "│                                                │"
 }
 
-MAIN() {
+main_dashboard() {
 
 	# Get the current CPU temperature and divide it by 1000 because it is given back as millicelsius
 	CPU_TEMP=$(($(cat "$TEMP_PATH") / 1000))
@@ -75,7 +75,7 @@ MAIN() {
 	fi
 }
 
-WARNINGS() {
+warnings_dashboard() {
 	echo -e "├────────────────────────────────────────────────┤"
 	echo -e "│                                                │"
 	echo -e "│ \e[1;34mWarnings\e[0m:                                      │"
@@ -90,19 +90,19 @@ WARNINGS() {
 	echo -e "│                                                │"
 }
 
-BOTTOM_BAR() {
+bottom_bar() {
 	echo -e "╰───┤ \e[1;31mPress CTRL+C to quit\e[0m ├─────────────────────╯"
 }
 
-## Main part
+# PROGRAM START
 
-FIND_TEMP_PATH
+find_temp_path
 
 while :; do
-	TOP_BAR
-	MAIN
-	WARNINGS
-	BOTTOM_BAR
+	top_bar
+	main_dashboard
+	warnings_dashboard
+	bottom_bar
 
 	sleep $INTERVAL
 done
