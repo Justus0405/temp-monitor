@@ -43,4 +43,3 @@ bash
 <p align="center">
 	<a href="https://github.com/Justus0405/temp-monitor/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Justus0405/temp-monitor?logo=Github&colorA=1e1e2e&colorB=cba6f7&style=for-the-badge"></a>
 </p>
-```
