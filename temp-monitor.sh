@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Simple temperature monitoring in bash
+#
+# Author: Justus0405
+# Date: 31.05.2025
+# License: MIT
 
 # Variables
 version="1.2"
