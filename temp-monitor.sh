@@ -13,9 +13,9 @@ export scriptVersion="1.2"
 export interval="1m"
 export warningThreshold="80"
 
-export configDir="$HOME/.config/temp-monitor"
-export logFile="$configDir/temps.log"
-export warningFile="$configDir/warnings.log"
+export configDir="${HOME}/.config/temp-monitor"
+export logFile="${configDir}/temps.log"
+export warningFile="${configDir}/warnings.log"
 
 ## USER CONFIGURATION STOP
 
@@ -58,8 +58,8 @@ logMessage() {
 
 checkEnviroment() {
 	# Create config directory and files
-	mkdir -p "$configDir"
-	touch "$logFile" "$warningFile"
+	mkdir -p "${configDir}"
+	touch "${logFile}" "${warningFile}"
 }
 
 findTempPath() {
@@ -92,20 +92,20 @@ topBar() {
 
 mainDashboard() {
 	# Get the current CPU temperature and divide it by 1000 because it is given back as millicelsius
-	export cpuTemp=$(($(cat "${tempPath}") / 1000))
+	cpuTemp=$(($(cat "${tempPath}") / 1000))
 	# Get the current time in a specific format
-	export currentTime=$(date +"%a %d.%m.%Y %H:%M:%S")
+	currentTime=$(date +"%a %d.%m.%Y %H:%M:%S")
 
 	# Write the current date and time along with the CPU temperature to the log file
 	echo "[${currentTime}]: ${cpuTemp}°C" >>"${logFile}"
 
 	# Assign the display temperature a color based on the temperature
-	if ((cpuTemp <= 39)); then
-		export temperatureColor="${cyan}"
-	elif ((cpuTemp >= 40 && cpuTemp <= 79)); then
-		export temperatureColor="${green}"
+	if [[ ${cpuTemp} -le 39 ]]; then
+		temperatureColor="${cyan}"
+	elif [[ ${cpuTemp} -ge 40 && ${cpuTemp} -le 79 ]]; then
+		temperatureColor="${green}"
 	else
-		export temperatureColor="${red}"
+		temperatureColor="${red}"
 	fi
 
 	# Display the last checked temperature and the last time it was checked
@@ -114,7 +114,7 @@ mainDashboard() {
 	echo -e "│                                                │"
 
 	# Check if the current temperature is above the warning threshold
-	if ((cpuTemp >= warningThreshold)); then
+	if [[ ${cpuTemp} -ge ${warningThreshold} ]]; then
 		echo -e "│[${currentTime}]: ${red}mWARNING! CPU IS ${cpuTemp}°C${reset} │" >>"${warningFile}"
 	fi
 }
