@@ -32,6 +32,12 @@ export bold="\e[1m"
 export reset="\e[0m"
 
 ### FUNCTIONS ###
+createEnviroment() {
+	# Create config directory and files
+	mkdir -p "${configDir}"
+	touch "${logFile}" "${warningFile}"
+}
+
 logMessage() {
 	local type=$1
 	local message=$2
@@ -54,12 +60,6 @@ logMessage() {
 		echo -e "[UNDEFINED] ${message}"
 		;;
 	esac
-}
-
-checkEnviroment() {
-	# Create config directory and files
-	mkdir -p "${configDir}"
-	touch "${logFile}" "${warningFile}"
 }
 
 findTempPath() {
@@ -139,7 +139,7 @@ bottomBar() {
 }
 
 ### PROGRAM START ###
-checkEnviroment
+createEnviroment
 findTempPath
 
 while :; do
