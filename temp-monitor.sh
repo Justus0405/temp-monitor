@@ -27,7 +27,7 @@ export yellow="\e[1;33m"
 export blue="\e[1;34m"
 export purple="\e[1;35m"
 export cyan="\e[1;36m"
-export gray="\e[1;37m"
+export white="\e[1;37m"
 export bold="\e[1m"
 export reset="\e[0m"
 
