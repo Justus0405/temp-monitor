@@ -74,7 +74,7 @@ findTempPath() {
 	for path in "${potentialPaths[@]}"; do
 		if [[ -f "${path}" ]]; then
 			# Check if the sensor returns a valid value
-			tempValue=$(cat "$path")
+			tempValue=$(cat "${path}")
 			if [[ ${tempValue} =~ ^[0-9]+$ ]]; then
 				tempPath="${path}"
 				return 0
@@ -115,7 +115,7 @@ mainDashboard() {
 
 	# Check if the current temperature is above the warning threshold
 	if [[ ${cpuTemp} -ge ${warningThreshold} ]]; then
-		echo -e "│[${currentTime}]: ${red}mWARNING! CPU IS ${cpuTemp}°C${reset} │" >>"${warningFile}"
+		echo -e "│[${currentTime}]: ${red}WARNING! CPU IS ${cpuTemp}°C${reset} │" >>"${warningFile}"
 	fi
 }
 
