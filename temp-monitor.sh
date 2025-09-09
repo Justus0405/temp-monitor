@@ -8,7 +8,7 @@
 
 export scriptVersion="1.2"
 
-## USER CONFIGURATION START ###
+## USER CONFIGURATION START
 
 export interval="1m"
 export warningThreshold="80"
