@@ -3,24 +3,65 @@
 # Simple temperature monitoring in bash
 #
 # Author: Justus0405
-# Date: 31.05.2025
+# Date: 31.05.2024
 # License: MIT
 
-# Variables
-version="1.2"
-interval="1m"
-warningThreshold="80"
-configDir="$HOME/.config/temp-monitor"
-logFile="$configDir/temps.log"
-warningFile="$configDir/warnings.log"
+export scriptVersion="1.2"
 
-# Create config directory and files
-mkdir -p "$configDir"
-touch "$logFile" "$warningFile"
+## USER CONFIGURATION START ###
 
-## General functions
+export interval="1m"
+export warningThreshold="80"
 
-# Function to find the temperature file path
+export configDir="$HOME/.config/temp-monitor"
+export logFile="$configDir/temps.log"
+export warningFile="$configDir/warnings.log"
+
+## USER CONFIGURATION STOP
+
+### COLOR CODES ###
+export black="\e[1;30m"
+export red="\e[1;31m"
+export green="\e[1;32m"
+export yellow="\e[1;33m"
+export blue="${blue}"
+export purple="\e[1;35m"
+export cyan="\e[1;36m"
+export gray="\e[1;37m"
+export bold="\e[1m"
+export reset="\e[0m"
+
+### FUNCTIONS ###
+logMessage() {
+	local type=$1
+	local message=$2
+	case "${type}" in
+	"info" | "INFO")
+		echo -e "[  ${cyan}INFO${reset}  ] ${message}"
+		;;
+	"done" | "DONE")
+		echo -e "[  ${green}DONE${reset}  ] ${message}"
+		exit 0
+		;;
+	"warning" | "WARNING")
+		echo -e "[ ${red}FAILED${reset} ] ${message}"
+		;;
+	"error" | "ERROR")
+		echo -e "[  ${red}ERROR${reset} ] ${message}"
+		exit 1
+		;;
+	*)
+		echo -e "[UNDEFINED] ${message}"
+		;;
+	esac
+}
+
+checkEnviroment() {
+	# Create config directory and files
+	mkdir -p "$configDir"
+	touch "$logFile" "$warningFile"
+}
+
 findTempPath() {
 	local potentialPaths=(
 		"/sys/class/thermal/thermal_zone0/temp"
@@ -31,76 +72,74 @@ findTempPath() {
 		"/sys/class/hwmon/hwmon1/temp2_input"
 	)
 	for path in "${potentialPaths[@]}"; do
-		if [[ -f "$path" ]]; then
+		if [[ -f "${path}" ]]; then
 			# Check if the sensor returns a valid value
 			tempValue=$(cat "$path")
-			if [[ $tempValue =~ ^[0-9]+$ ]]; then
-				tempPath="$path"
+			if [[ ${tempValue} =~ ^[0-9]+$ ]]; then
+				tempPath="${path}"
 				return 0
 			fi
 		fi
 	done
-	echo -e "\e[1;31mError:\e[0m No valid temperature sensor found"
-	exit 1
+	logMessage "error" "No valid temperature sensor found."
 }
 
 topBar() {
 	clear
-	echo -e "╭───┤ \e[1;32mTemp Monitor\e[0m ├───┤ \e[1;33mVersion $version\e[0m ├───────────╮"
+	echo -e "╭───┤ ${green}Temp Monitor${reset} ├───┤ ${yellow}Version ${scriptVersion}${reset} ├───────────╮"
 	echo -e "│                                                │"
 }
 
 mainDashboard() {
-
 	# Get the current CPU temperature and divide it by 1000 because it is given back as millicelsius
-	cpuTemp=$(($(cat "$tempPath") / 1000))
+	export cpuTemp=$(($(cat "${tempPath}") / 1000))
 	# Get the current time in a specific format
-	currentTime=$(date +"%a %d.%m.%Y %H:%M:%S")
+	export currentTime=$(date +"%a %d.%m.%Y %H:%M:%S")
 
 	# Write the current date and time along with the CPU temperature to the log file
-	echo "[$currentTime]: $cpuTemp°C" >>"$logFile"
+	echo "[${currentTime}]: ${cpuTemp}°C" >>"${logFile}"
 
 	# Assign the display temperature a color based on the temperature
 	if ((cpuTemp <= 39)); then
-		tempColor="\e[1;36m"
+		export temperatureColor="${cyan}"
 	elif ((cpuTemp >= 40 && cpuTemp <= 79)); then
-		tempColor="\e[1;32m"
+		export temperatureColor="${green}"
 	else
-		tempColor="\e[1;31m"
+		export temperatureColor="${red}"
 	fi
 
 	# Display the last checked temperature and the last time it was checked
-	echo -e "│ \e[1;34mTemperature\e[0m  : $tempColor$cpuTemp°C\e[0m                            │"
-	echo -e "│ \e[1;34mLast checked\e[0m : $(date +"%H:%M:%S")                        │"
+	echo -e "│ ${blue}Temperature${reset}  : ${temperatureColor}${cpuTemp}°C${reset}                            │"
+	echo -e "│ ${blue}Last checked${reset} : $(date +"%H:%M:%S")                        │"
 	echo -e "│                                                │"
 
 	# Check if the current temperature is above the warning threshold
 	if ((cpuTemp >= warningThreshold)); then
-		echo -e "│[$currentTime]: \e[1;31mWARNING! CPU IS $cpuTemp°C\e[0m │" >>"$warningFile"
+		echo -e "│[${currentTime}]: ${red}mWARNING! CPU IS ${cpuTemp}°C${reset} │" >>"${warningFile}"
 	fi
 }
 
 warningsDashboard() {
 	echo -e "├────────────────────────────────────────────────┤"
 	echo -e "│                                                │"
-	echo -e "│ \e[1;34mWarnings\e[0m:                                      │"
+	echo -e "│ ${blue}Warnings${reset}:                                      │"
 	echo -e "│                                                │"
 
-	if [[ -s "$warningFile" ]]; then
-		cat "$warningFile"
+	if [[ -s "${warningFile}" ]]; then
+		cat "${warningFile}"
 	else
-		echo -e "│ \e[1;32mNo warnings recorded\e[0m                           │"
+		echo -e "│ ${green}No warnings recorded${reset}                           │"
 	fi
 
 	echo -e "│                                                │"
 }
 
 bottomBar() {
-	echo -e "╰───┤ \e[1;31mPress CTRL+C to quit\e[0m ├─────────────────────╯"
+	echo -e "╰───┤ ${red}Press CTRL+C to quit${reset} ├─────────────────────╯"
 }
 
-# PROGRAM START
-
+### PROGRAM START ###
+checkEnviroment
 findTempPath
 
 while :; do
@@ -109,5 +148,5 @@ while :; do
 	warningsDashboard
 	bottomBar
 
-	sleep $interval
+	sleep ${interval}
 done
