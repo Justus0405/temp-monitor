@@ -35,8 +35,12 @@ export lightYellow="\e[1;93m"
 export lightBlue="\e[1;94m"
 export lightPurple="\e[1;95m"
 export lightCyan="\e[1;96m"
-export white="\e[1;94m"
+export white="\e[1;97m"
 export bold="\e[1m"
+export faint="\e[2m"
+export italic="\e[3m"
+export underlined="\e[4m"
+export blinking="\e[5m"
 export reset="\e[0m"
 
 ### FUNCTIONS ###
