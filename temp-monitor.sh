@@ -50,30 +50,6 @@ createEnviroment() {
 	touch "${logFile}" "${warningFile}"
 }
 
-logMessage() {
-	local type=$1
-	local message=$2
-	case "${type}" in
-	"info" | "INFO")
-		echo -e "[  ${cyan}INFO${reset}  ] ${message}"
-		;;
-	"done" | "DONE")
-		echo -e "[  ${green}DONE${reset}  ] ${message}"
-		exit 0
-		;;
-	"warning" | "WARNING")
-		echo -e "[ ${red}FAILED${reset} ] ${message}"
-		;;
-	"error" | "ERROR")
-		echo -e "[  ${red}ERROR${reset} ] ${message}"
-		exit 1
-		;;
-	*)
-		echo -e "[UNDEFINED] ${message}"
-		;;
-	esac
-}
-
 findTempPath() {
 	local potentialPaths=(
 		"/sys/class/thermal/thermal_zone0/temp"
@@ -93,7 +69,8 @@ findTempPath() {
 			fi
 		fi
 	done
-	logMessage "error" "No valid temperature sensor found."
+	echo -e "${red}ERROR:${reset} No valid temperature sensor found."
+	exit 1
 }
 
 topBar() {
